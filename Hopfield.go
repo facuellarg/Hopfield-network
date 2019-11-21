@@ -52,10 +52,12 @@ func Guess(nn *HopfieldNN, input []float64) [][]float64 {
 	tmp := make([]float64, len(input))
 	copy(tmp, input)
 	stepsHP[0] = tmp
+	var convergence int
 
 	for {
-
-		err, output := MatrixMultiplication([][]float64{input}, nn.Wieghts)
+		indexNeuron := rand.Intn(len(input))
+		err, output := MatrixMultiplication([][]float64{input},
+			Transpose([][]float64{nn.Wieghts[indexNeuron]}))
 		if err != nil {
 			println(err.Error())
 		}
@@ -66,18 +68,28 @@ func Guess(nn *HopfieldNN, input []float64) [][]float64 {
 			}
 			return -1.0
 		})
-		for _, r := range rand.Perm(len(input)) {
-			if output[0][r] != input[r] {
-				tmp := make([]float64, len(input))
-				copy(tmp, stepsHP[len(stepsHP)-1])
-				tmp[r] = output[0][r]
-				stepsHP = append(stepsHP, tmp)
-			}
+		if stepsHP[len(stepsHP)-1][indexNeuron] != output[0][0] {
+			tmp := make([]float64, len(input))
+			copy(tmp, stepsHP[len(stepsHP)-1])
+			tmp[indexNeuron] = output[0][0]
+			stepsHP = append(stepsHP, tmp)
+			convergence = 0
+		} else {
+			convergence++
 		}
-		if IsEqual(input, (output[0])) {
+
+		// for _, r := range rand.Perm(len(input)) {
+		// 	if output[0][r] != input[r] {
+		// 		tmp := make([]float64, len(input))
+		// 		copy(tmp, stepsHP[len(stepsHP)-1])
+		// 		tmp[r] = output[0][r]
+		// 		stepsHP = append(stepsHP, tmp)
+		// 	}
+		// }
+		if convergence > 150 {
 			break
 		}
-		copy(input, output[0])
+
 	}
 	println(len(stepsHP))
 	return stepsHP

@@ -18,9 +18,9 @@ func appMain(driver gxui.Driver) {
 	img.SetTexture(texture)
 	window.AddChild(img)
 	window.OnClick(func(m gxui.MouseEvent) {
-		window.RemoveAll()
 		indexImg++
 		if indexImg < len(steps) {
+			window.RemoveAll()
 			newImg := theme.CreateImage()
 			myImg, _ = VectorToImage(steps[indexImg], 8, 8, width/8)
 			texture = driver.CreateTexture(myImg, 1)
