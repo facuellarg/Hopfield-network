@@ -11,7 +11,7 @@ func appMain(driver gxui.Driver) {
 	// The themes create the content. Currently only a dark theme is offered for GUI elements.
 	theme := dark.CreateTheme(driver)
 	img := theme.CreateImage()
-	window := theme.CreateWindow(width, height, "Image viewer")
+	window := theme.CreateWindow(width, height, "Hopfield")
 	myImg, _ := VectorToImage(steps[0], 8, 8, width/8)
 	texture := driver.CreateTexture(myImg, 1)
 
